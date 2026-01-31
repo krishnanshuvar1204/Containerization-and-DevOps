@@ -14,9 +14,7 @@ This section includes notes, and documentation related to Containerization and D
 
 ### Theory Topics
 
-- [Class Notes](https://www.notion.so/Docker-Notes-2f020f08a155803a8ae0dec04160f681)
-- [1: Installing Docker](Class/InstallallingDocker/README.md)
-- [2: Creating a Dockerfile](Theory/Docker-Images)
+- [1: Working with Docker and Dockerfile](Theory/Docker-Images)
 
 ---
 
