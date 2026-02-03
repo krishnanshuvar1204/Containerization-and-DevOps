@@ -10,7 +10,7 @@ To perform Docker installation, pull images, run containers, and manage the cont
 
 ## Step 1: Pull Docker Image  
 
-![Step1](Screenshots/Exp2/21.png)
+![Step1](Screenshots/Screenshot(858).png)
 
 ---
 
