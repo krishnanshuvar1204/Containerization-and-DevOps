@@ -25,11 +25,12 @@ This section contains practical experiments and hands-on exercises to apply DevO
 ### Lab Experiments
 
 - [Lab 1: Perfomance Comparision](Lab/Lab-1/README.md)
+- [Lab 2: Working with nginx in Docker](Lab/Lab-2/README.md)
 
 ---
 
 ## 📌 Notes
 
-- All theory materials are located in the `class/` directory.
-- All lab experiments are located in the `lab/` directory.
+- All theory materials are located in the `Theory/` directory.
+- All lab experiments are located in the `Lab/` directory.
 - Each link points to a detailed Markdown file for easy reading and updates.
