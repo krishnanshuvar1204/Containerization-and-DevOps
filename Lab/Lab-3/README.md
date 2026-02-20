@@ -54,7 +54,7 @@ CMD ["nginx", "-g", "daemon off;"]
 1. create separate folder
 2. create a python program:
 
-![ ](Screenshots/fast2)
+![ ](Screenshots/fast2.jpeg)
 
 3. create docker file with commands:
 
@@ -75,7 +75,7 @@ CMD ["python", "app.py"]
 
 ```
 
-![ ](Screenshots/fast6)
+![ ](Screenshots/fast6.jpeg)
 
 ---
 
@@ -87,7 +87,7 @@ CMD ["python", "app.py"]
 docker build -t flask-sapid-app .
 ```
 
-![ ](Screenshots/fast4)
+![ ](Screenshots/fast4.jpeg)
 
 
 
@@ -98,10 +98,10 @@ docker build -t flask-sapid-app .
 docker run -d -p 8080:5000 flask-sapid-app:3.0
 ```
 
-![ ](Screenshots/fast5)
+![ ](Screenshots/fast5.jpeg)
 
 ## Result
 
 Python program running
 
-![ ](Screenshots/fast5)
+![ ](Screenshots/fast5.jpeg)
