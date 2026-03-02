@@ -16,6 +16,12 @@ This section includes notes, and documentation related to Containerization and D
 
 - [1: Working with Docker and Dockerfile](Theory/Docker-Images)
 - [2: Working with Docker API](Theory/Docker-API/)
+- [3: Working with Dockerfiles and Python App](Theory/Python-Task/)
+- [4: Working with Docker Volumes](Theory/Docker-Volumes/)
+- [5: Bind Mount and Tempfs](Theory/BindMount-Tempfs/)
+- [6: Multistage Dockerfiles](Theory/Multistage-Dockerfile/)
+- [7: Working with Docker Networks](Theory/Docker-Network/)
+- [8: Working with Docker Compose](Theory/Docker-Compose/)
 
 ---
 
