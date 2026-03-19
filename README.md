@@ -39,6 +39,9 @@ This section contains practical experiments and hands-on exercises to apply DevO
 
 ---
 
+## Assignment
+- [Assignment 1](assignment/README.md)
+
 ## 📌 Notes
 
 - All theory materials are located in the `Theory/` directory.
