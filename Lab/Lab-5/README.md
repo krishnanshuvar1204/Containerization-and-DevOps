@@ -21,7 +21,7 @@ docker run -it --name test-container ubuntu /bin/bash
 cat message.txt
 # ERROR: File doesn't exist! Data was lost.
 ```
-![](Screenshots/Screenshot(966.png))
+![](Screenshots/Screenshot(966).png)
 
 
 
@@ -42,7 +42,7 @@ docker volume ls
 docker inspect web1 | grep -A 5 Mounts
 ```
 
-![](Screenshots/Screenshot(967.png))
+![](Screenshots/Screenshot(967).png)
 
 #### **2. Named Volumes**
 ```bash
@@ -59,7 +59,7 @@ docker volume ls
 # Inspect volume
 docker volume inspect mydata
 ```
-![](Screenshots/Screenshot(968.png))
+![](Screenshots/Screenshot(968).png)
 
 
 #### **3. Bind Mounts (Host Directory)**
@@ -77,7 +77,7 @@ echo "From Host" > ~/myapp-data/host-file.txt
 docker exec web3 cat /app/data/host-file.txt
 # Shows: From Host
 ```
-![](Screenshots/Screenshot(968.png))
+![](Screenshots/Screenshot(968).png)
 
 
 ---
@@ -104,7 +104,7 @@ docker run -d \
   mysql:8.0
 # Data is preserved!
 ```
-![](Screenshots/Screenshot(969.png))
+![](Screenshots/Screenshot(969).png)
 
 #### **Example 2: Web App with Configuration Files**
 ```bash
@@ -130,10 +130,10 @@ docker run -d \
 # Test
 curl http://localhost:8080
 ```
-![](Screenshots/Screenshot(970.png))
+![](Screenshots/Screenshot(970).png)
 
-![](Screenshots/Screenshot(971.png))
-![](Screenshots/Screenshot(972.png))
+![](Screenshots/Screenshot(971).png)
+![](Screenshots/Screenshot(972).png)
 ---
 ### **Lab 4: Volume Management Commands**
 ```bash
@@ -155,7 +155,7 @@ docker volume rm volume-name
 # Copy files to/from volume
 docker cp local-file.txt container-name:/path/in/volume
 ```
-![](Screenshots/Screenshot(973.png))
+![](Screenshots/Screenshot(973).png)
 
 ---
 
@@ -306,8 +306,8 @@ docker stats --no-stream
 # All containers (including stopped)
 docker stats --all
 ```
-![](Screenshots/Screenshot(975.png))
-![](Screenshots/Screenshot(976.png))
+![](Screenshots/Screenshot(975).png)
+![](Screenshots/Screenshot(976).png)
 
 
 #### **Useful Format Options:**
@@ -321,7 +321,7 @@ docker stats --format json --no-stream
 # Wide output
 docker stats --no-stream --no-trunc
 ```
-![](Screenshots/Screenshot(977.png))
+![](Screenshots/Screenshot(977).png)
 
 ### **Lab 2: `docker top` - Process Monitoring**
 ```bash
@@ -356,8 +356,8 @@ docker logs --since 2024-01-15 container-name
 # Combine options
 docker logs -f --tail 50 -t container-name
 ```
-![](Screenshots/Screenshot(978.png))
-![](Screenshots/Screenshot(979.png))
+![](Screenshots/Screenshot(978).png)
+![](Screenshots/Screenshot(979).png)
 ### **Lab 4: Container Inspection**
 ```bash
 # Detailed container info
@@ -372,8 +372,8 @@ docker inspect --format='{{.Config.Env}}' container-name
 docker inspect --format='{{.HostConfig.Memory}}' container-name
 docker inspect --format='{{.HostConfig.NanoCpus}}' container-name
 ```
-![](Screenshots/Screenshot(980.png))
-![](Screenshots/Screenshot(981.png))
+![](Screenshots/Screenshot(980).png)
+![](Screenshots/Screenshot(981).png)
 ### **Lab 5: Events Monitoring**
 ```bash
 # Monitor Docker events in real-time
@@ -455,8 +455,8 @@ docker run -d --name web2 --network my-network nginx
 # Containers can communicate using container names
 docker exec web1 curl http://web2
 ```
-![](Screenshots/Screenshot(982.png))
-![](Screenshots/Screenshot(983.png))
+![](Screenshots/Screenshot(982).png)
+![](Screenshots/Screenshot(983).png)
 
 #### **2. Host Network**
 ```bash
@@ -468,7 +468,7 @@ docker run -d --name host-app --network host nginx
 # Access directly on host port 80
 curl http://localhost
 ```
-![](Screenshots/Screenshot(984.png))
+![](Screenshots/Screenshot(984).png)
 
 #### **3. None Network**
 ```bash
@@ -479,7 +479,7 @@ docker run -d --name isolated-app --network none alpine sleep 3600
 docker exec isolated-app ifconfig
 # Only loopback interface
 ```
-![](Screenshots/Screenshot(984.png))
+![](Screenshots/Screenshot(984).png)
 
 #### **4. Overlay Network (Swarm)**
 ```bash
@@ -505,7 +505,7 @@ docker network rm network-name
 # Prune unused networks
 docker network prune
 ```
-![](Screenshots/Screenshot(985.png))
+![](Screenshots/Screenshot(985).png)
 
 ---
 ### **Lab 4: Multi-Container Application Example**
@@ -534,7 +534,7 @@ docker run -d \
 
 # Web app can connect to database using "postgres-db" hostname
 ```
-![](Screenshots/Screenshot(986.png))
+![](Screenshots/Screenshot(986).png)
 
 ---
 ### **Lab 5: Network Inspection & Debugging**
@@ -556,8 +556,8 @@ docker exec container-name curl -I http://another-container
 docker port container-name
 ```
 
-![](Screenshots/Screenshot(987.png))
-
+![](Screenshots/Screenshot(987).png)
+![](Screenshots/Screenshot(988).png)
 
 ## **Quick Reference Cheatsheet**
 
