@@ -41,6 +41,7 @@ This section contains practical experiments and hands-on exercises to apply DevO
 
 ## Assignment
 - [Assignment 1](assignment/README.md)
+- [Assignment Apache Server](class-task-apache/README.md)
 
 ## 📌 Notes
 
