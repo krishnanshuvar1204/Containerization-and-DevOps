@@ -37,6 +37,7 @@ This section contains practical experiments and hands-on exercises to apply DevO
 - [Lab 4: Docker Essentials](Lab/Lab-4/README.md)
 - [Lab 5: Docker Volumes, Networking](Lab/Lab-5/README.md)
 - [Lab 6: Docker Compose vs Docker Run](/Lab/Lab-6/README.md)
+- [Lab 7: Jenkins App](/Lab/Lab-7/README.md)
 - [Lab 9: Ansible](Lab/Lab-9/README.md)
 
 ---
