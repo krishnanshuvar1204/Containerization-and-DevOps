@@ -1,25 +1,34 @@
-# 🧪 Experiment 6
-# Comparison of Docker Run vs Docker Compose | Multi-Stage Build | Networking
+# Experiment 6
+
+## Title: Comparison of Docker Run and Docker Compose
 
 ---
 
-## 🎯 Aim
+# PART A – THEORY
 
-To study and implement:
+## 1. Objective
 
-- Docker container execution using `docker run`
-- Multi-container orchestration using `docker compose`
-- Docker networking
-- Port mapping and environment variables
-- WordPress + MySQL setup using Docker
-- Multi-stage Docker builds
-- Troubleshooting Docker errors
+To understand the relationship between `docker run` and Docker Compose, and to compare their configuration syntax and use cases.
 
 ---
 
-## 🧩 Part 1 – Running Nginx Using Docker Run
+## 2. Background Theory
 
-### 🔹 Command
+### 2.1 Docker Run (Imperative Approach)
+
+The `docker run` command is used to create and start a container from an image. It requires explicit flags for:
+
+* Port mapping (`-p`)
+* Volume mounting (`-v`)
+* Environment variables (`-e`)
+* Network configuration (`--network`)
+* Restart policies (`--restart`)
+* Resource limits (`--memory`, `--cpus`)
+* Container name (`--name`)
+
+This approach is **imperative**, meaning you specify step-by-step instructions.
+
+Example:
 
 ```bash
 docker run -d \
@@ -31,60 +40,170 @@ docker run -d \
   nginx:alpine
 ```
 
-### 🔹 Verify Container & Test Using Curl
-
-```bash
-docker ps
-curl localhost:8080
-```
-
-![ ](../Screenshots/Exp6/28a.png)
-
 ---
 
-### 🔹 Stop & Remove Container
+### 2.2 Docker Compose (Declarative Approach)
+
+Docker Compose uses a YAML file (`docker-compose.yml`) to define services, networks, and volumes in a structured format.
+
+Instead of multiple `docker run` commands, a single command is used:
 
 ```bash
-docker stop my-nginx
-docker rm my-nginx
+docker compose up -d
 ```
 
----
+Compose is **declarative**, meaning you define the desired state of the application.
 
-## 🧩 Part 2 – Using Docker Compose
-
-### 🔹 docker-compose.yml
+Equivalent Compose file:
 
 ```yaml
+version: '3.8'
+
 services:
   nginx:
     image: nginx:alpine
     container_name: my-nginx
     ports:
       - "8080:80"
+    volumes:
+      - ./html:/usr/share/nginx/html
+    environment:
+      NGINX_HOST: localhost
+    restart: unless-stopped
 ```
-
-### 🔹 Run, Verify & Stop Compose
-
-```bash
-docker compose up -d
-docker compose ps
-docker compose down
-```
-
-![ ](../Screenshots/Exp6/28b.png)
+![1](Screenshots/Screenshot(1048).png)
 
 ---
 
-## 🧩 Part 3 – WordPress + MySQL Using Docker Network
+## 3. Mapping: Docker Run vs Docker Compose
 
-### 🔹 Create Network
+| Docker Run Flag     | Docker Compose Equivalent        |
+| ------------------- | -------------------------------- |
+| `-p 8080:80`        | `ports:`                         |
+| `-v host:container` | `volumes:`                       |
+| `-e KEY=value`      | `environment:`                   |
+| `--name`            | `container_name:`                |
+| `--network`         | `networks:`                      |
+| `--restart`         | `restart:`                       |
+| `--memory`          | `deploy.resources.limits.memory` |
+| `--cpus`            | `deploy.resources.limits.cpus`   |
+| `-d`                | `docker compose up -d`           |
+
+---
+
+## 4. Advantages of Docker Compose
+
+1. Simplifies multi-container applications
+2. Provides reproducibility
+3. Version controllable configuration
+4. Unified lifecycle management
+5. Supports service scaling
+
+Example:
+
+```bash
+docker compose-up --scale web=3
+```
+
+---
+
+# PART B – PRACTICAL TASK
+
+## Task 1: Single Container Comparison
+
+### Step 1: Run Nginx Using Docker Run
+
+Execute:
+
+```bash
+docker run -d \
+  --name lab-nginx \
+  -p 8081:80 \
+  -v $(pwd)/html:/usr/share/nginx/html \
+  nginx:alpine
+```
+
+Verify:
+
+```bash
+docker ps
+```
+
+Access:
+
+```
+http://localhost:8081
+```
+
+Stop and remove container:
+
+```bash
+docker stop lab-nginx
+docker rm lab-nginx
+```
+
+
+---
+
+### Step 2: Run Same Setup Using Docker Compose
+
+Create `docker-compose.yml`:
+
+```yaml
+version: '3.8'
+
+services:
+  nginx:
+    image: nginx:alpine
+    container_name: lab-nginx
+    ports:
+      - "8081:80"
+    volumes:
+      - ./html:/usr/share/nginx/html
+```
+
+Run:
+
+```bash
+docker compose-up -d
+```
+
+Verify:
+
+```bash
+docker compose ps
+```
+
+Stop:
+
+```bash
+docker compose down
+```
+![2](Screenshots/Screenshot(1050).png)
+
+
+---
+
+## Task 2: Multi-Container Application
+
+### Objective:
+
+Deploy WordPress with MySQL using:
+
+1. Docker Run (manual way)
+2. Docker Compose (structured way)
+
+---
+
+### A. Using Docker Run
+
+1. Create network:
 
 ```bash
 docker network create wp-net
 ```
 
-### 🔹 Run MySQL Container
+2. Run MySQL:
 
 ```bash
 docker run -d \
@@ -95,251 +214,487 @@ docker run -d \
   mysql:5.7
 ```
 
-### 🔹 Run WordPress Container
+3. Run WordPress:
 
 ```bash
 docker run -d \
   --name wordpress \
   --network wp-net \
-  -p 8090:80 \
+  -p 8082:80 \
   -e WORDPRESS_DB_HOST=mysql \
   -e WORDPRESS_DB_PASSWORD=secret \
   wordpress:latest
 ```
 
-```bash
-curl http://localhost:8090
-```
+Test:
 
-![ ](../Screenshots/Exp6/28c.png)
+```
+http://localhost:8082
+```
+![3](Screenshots/Screenshot(1049).png)
 
 ---
 
-### 🔹 WordPress + MySQL via Docker Compose
+### B. Using Docker Compose
 
-```bash
-docker compose up -d
-docker compose down -v
+Create `docker-compose.yml`:
+
+```yaml
+version: '3.8'
+
+services:
+  mysql:
+    image: mysql:5.7
+    environment:
+      MYSQL_ROOT_PASSWORD: secret
+      MYSQL_DATABASE: wordpress
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+  wordpress:
+    image: wordpress:latest
+    ports:
+      - "8082:80"
+    environment:
+      WORDPRESS_DB_HOST: mysql
+      WORDPRESS_DB_PASSWORD: secret
+    depends_on:
+      - mysql
+
+volumes:
+  mysql_data:
 ```
 
-![ ](../Screenshots/Exp6/28d.png)
+Run:
+
+```bash
+docker compose-up -d
+```
+
+Stop:
+
+```bash
+docker compose-down -v
+```
+![4](Screenshots/Screenshot(1051).png)
 
 ---
 
-## 🧩 Part 4 – Multi-Stage Dockerfile (Advanced Node App)
 
-### 🔹 Fixing Docker Credential Error & Pulling Image
+
+# PART C – CONVERSION & BUILD-BASED TASKS
+
+## Task 3: Convert Docker Run to Docker Compose
+
+### Problem 1: Basic Web Application
+
+### Given Docker Run Command:
 
 ```bash
-rm -rf ~/.docker
-docker pull node:18-alpine
-docker compose up -d
+docker run -d \
+  --name webapp \
+  -p 5000:5000 \
+  -e APP_ENV=production \
+  -e DEBUG=false \
+  --restart unless-stopped \
+  node:18-alpine
 ```
-
-![ ](../Screenshots/Exp6/28e.png)
 
 ---
 
-### 🔹 Python + PostgreSQL Backend via Compose
+### Student Task:
 
-```bash
-docker compose up -d
-docker compose down -v
-docker compose down --remove-orphans
-docker compose up -d --build
+1. Write an equivalent `docker-compose.yml`
+2. Ensure:
+
+   * Same container name
+   * Same port mapping
+   * Same environment variables
+   * Same restart policy
+3. Run using:
+
+   ```bash
+   docker compose up -d
+   ```
+4. Verify using:
+
+   ```bash
+   docker compose ps
+   ```
+
+### Solution:
+
+docker-compose file:
+
+```yaml
+version: '3.8'
+
+services:
+  webapp:
+    image: node:18-alpine
+    container_name: webapp
+    ports:
+      - "5000:5000"
+    environment:
+      APP_ENV: production
+      DEBUG: "false"
+    restart: unless-stopped
 ```
 
-![ ](../Screenshots/Exp6/28f.png)
+![5](Screenshots/Screenshot(1052).png)
+
 
 ---
 
-### 🔹 Dockerfile (Multi-Stage)
+## Problem 2: Volume + Network Configuration
+
+### Given Docker Run Commands:
+
+```bash
+docker network create app-net
+```
+
+```bash
+docker run -d \
+  --name postgres-db \
+  --network app-net \
+  -e POSTGRES_USER=admin \
+  -e POSTGRES_PASSWORD=secret \
+  -v pgdata:/var/lib/postgresql/data \
+  postgres:15
+```
+
+```bash
+docker run -d \
+  --name backend \
+  --network app-net \
+  -p 8000:8000 \
+  -e DB_HOST=postgres-db \
+  -e DB_USER=admin \
+  -e DB_PASS=secret \
+  python:3.11-slim
+```
+
+---
+
+### Student Task:
+
+1. Create a single `docker-compose.yml` file that:
+
+   * Defines both services
+   * Creates named volume `pgdata`
+   * Creates custom network `app-net`
+   * Uses `depends_on`
+2. Bring up services using one command.
+3. Stop and remove everything properly.
+
+### Solution:
+
+docker-compose file:
+
+```yaml
+version: '3.8'
+
+services:
+  postgres-db:
+    image: postgres:15
+    container_name: postgres-db
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: secret
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    networks:
+      - app-net
+
+  backend:
+    image: python:3.11-slim
+    container_name: backend
+    ports:
+      - "8000:8000"
+    environment:
+      DB_HOST: postgres-db
+      DB_USER: admin
+      DB_PASS: secret
+    depends_on:
+      - postgres-db
+    networks:
+      - app-net
+
+volumes:
+  pgdata:
+
+networks:
+  app-net:
+
+```
+
+![6](Screenshots/Screenshot(1051).png)
+
+
+---
+
+## Task 4: Resource Limits Conversion
+
+### Given Docker Run Command:
+
+```bash
+docker run -d \
+  --name limited-app \
+  -p 9000:9000 \
+  --memory="256m" \
+  --cpus="0.5" \
+  --restart always \
+  nginx:alpine
+```
+
+---
+
+### Student Task:
+
+1. Convert this to Docker Compose.
+2. Add resource limits using:
+
+   ```yaml
+   deploy:
+     resources:
+       limits:
+   ```
+3. Explain:
+
+   * When `deploy` works
+   * Difference between normal Compose mode and Swarm mode
+
+### Solution:
+
+docker-compose file:
+
+```yaml
+version: '3.8'
+
+services:
+  limited-app:
+    image: nginx:alpine
+    container_name: limited-app
+    ports:
+      - "9000:9000"
+    restart: always
+
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+          cpus: "0.5"
+```
+![7](Screenshots/Screenshot(1052).png)
+
+#### When `deploy` Works
+
+- The `deploy` section works **only in Docker Swarm mode**.
+- It is applied when using:
+  ```bash
+  docker stack deploy
+
+#### Difference: Compose Mode vs Swarm Mode
+
+Normal Compose Mode
+
+- Used for **local development**
+- Single-node only
+- `deploy` section is ignored
+
+Run using:
+```bash
+docker compose up
+```
+Swarm Mode
+- Used for **production and clustering**
+- Supports **multi-node setup**
+- Supports **scaling and rolling updates**
+- `deploy` section works
+
+Run using:
+
+```bash
+docker stack deploy
+```
+
+---
+
+# PART D – USING DOCKERFILE INSTEAD OF STANDARD IMAGE
+
+Now increase difficulty.
+
+Instead of using prebuilt images like:
+
+```yaml
+image: node:18-alpine
+```
+
+Students must:
+
+* Create their own Dockerfile
+* Build image using Compose
+* Run container from that build
+
+---
+
+## Task 5: Replace Standard Image with Dockerfile (Node App)
+
+### Scenario
+
+You are given:
+
+```bash
+docker run -d -p 3000:3000 node:18-alpine
+```
+
+Now instead of directly using `node:18-alpine`, you must:
+
+1. Create a simple Node.js app
+2. Write a Dockerfile
+3. Use Docker Compose `build:` option
+
+---
+
+### Step 1: Create `app.js`
+
+```javascript
+const http = require('http');
+
+http.createServer((req, res) => {
+  res.end("Docker Compose Build Lab");
+}).listen(3000);
+```
+
+---
+
+### Step 2: Create `Dockerfile`
 
 ```dockerfile
-# Stage 1 – Builder
-FROM node:18-alpine AS builder
-
-WORKDIR /app
-COPY package*.json ./
-RUN npm install --production
-COPY . .
-
-# Stage 2 – Production
 FROM node:18-alpine
 
 WORKDIR /app
-COPY --from=builder /app /app
 
-ENV PORT=3000
-ENV APP_MODE=production
+COPY app.js .
 
 EXPOSE 3000
 
 CMD ["node", "app.js"]
 ```
 
-### 🔹 Build and Run Using Compose
+---
 
-```bash
-docker compose up -d --build
-docker compose ps
-docker images
+### Step 3: Create `docker-compose.yml`
+
+```yaml
+version: '3.8'
+
+services:
+  nodeapp:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: custom-node-app
+    ports:
+      - "3000:3000"
+```
+![8](Screenshots/Screenshot(1053).png)
+
+---
+
+
+### Student Task:
+
+1. Build and run using:
+
+   ```bash
+   docker compose up --build -d
+   ```
+2. Verify in browser:
+
+   ```
+   http://localhost:3000
+   ```
+3. Modify `app.js` message.
+4. Rebuild and observe changes.
+
+![9](Screenshots/Screenshot(1054).png)
+
+---
+
+# Advanced Build Challenge
+
+## Task 6: Multi-Stage Dockerfile with Compose
+
+### Requirement:
+
+Create a simple Python FastAPI or Node production-ready app using:
+
+* Multi-stage Dockerfile
+* Smaller final image
+* Use Compose to build it
+
+---
+
+### Must:
+
+1. Write multi-stage Dockerfile
+2. Use `build:` in Compose
+3. Add environment variables
+4. Add volume mount for development mode
+5. Compare image size:
+
+   ```bash
+   docker images
+   ```
+
+### Solution:
+
+DockerFile:
+
+```dockerfile
+# ---------- Stage 1: Builder ----------
+FROM python:3.11-slim AS builder
+
+WORKDIR /app
+
+COPY app/requirements.txt .
+
+RUN pip install --upgrade pip \
+    && pip install --prefix=/install -r requirements.txt
+
+# ---------- Stage 2: Production ----------
+FROM python:3.11-slim
+
+WORKDIR /app
+
+COPY --from=builder /install /usr/local
+COPY app/ .
+
+ENV PYTHONUNBUFFERED=1
+
+EXPOSE 8000
+
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
+
 ```
 
-![ ](../Screenshots/Exp6/28g.png)
+docker-compose file:
 
----
+```yaml
+version: "3.8"
 
-### 🔹 Build exp6-nodeapp & exp6-advanced-app
-
-```bash
-docker compose up --build -d
-curl localhost:3000
+services:
+  fastapi-app:
+    build: .
+    container_name: fastapi-app
+    ports:
+      - "8000:8000"
+    environment:
+      APP_ENV: production
+    volumes:
+      - ./app:/app   # For development mode (auto reload if used)
+    restart: unless-stopped
 ```
-
-![ ](../Screenshots/Exp6/28h.png)
-
----
-
-### 🔹 Rebuild & Verify Advanced App
-
-```bash
-docker compose up --build -d
-curl localhost:3000
-docker ps
-```
-
-![ ](../Screenshots/Exp6/28i.png)
-
----
-
-### 🔹 Multi-Stage Dockerfile with Compose
-
-Requirements:
-- Multi-stage Dockerfile
-- Smaller final image
-- Use `build:` in Compose
-- Add environment variables
-- Add volume mount for development mode
-- Compare image size: `docker images`
-
-```bash
-docker compose up --build -d
-docker ps
-```
-
-![ ](../Screenshots/Exp6/28j.png)
-
----
-
-### 🔹 Verify Application in Production Mode
-
-```bash
-curl localhost:3001
-```
-
-![ ](../Screenshots/Exp6/28k.png)
-
----
-
-## 🧠 Difference Between Docker Run & Docker Compose
-
-| Feature | Docker Run | Docker Compose |
-|---|---|---|
-| Configuration | CLI-based | YAML file |
-| Multiple Containers | Manual | Automatic |
-| Networking | Manual setup | Auto-created |
-| Scalability | Difficult | Easy |
-| Maintainability | Low | High |
-| Production Ready | Limited | Yes |
-
----
-
-## 🚀 Concepts Covered
-
-- Containerization
-- Port Mapping (`-p host:container`)
-- Volume Mounting (`-v`)
-- Environment Variables (`-e`)
-- Docker Networks
-- Restart Policies
-- Orphan Containers
-- Multi-stage Build Optimization
-- Layer Caching
-
----
-
-## ❗ Errors Faced & Solutions
-
-### 1️⃣ Port Already Allocated
-**Error:** `Bind for 0.0.0.0 failed`  
-**Solution:** Stop existing container or change host port.
-
----
-
-### 2️⃣ Container Name Conflict
-**Error:** Container name already in use  
-**Solution:**
-```bash
-docker rm -f <container-name>
-```
-
----
-
-### 3️⃣ Docker Credential Error
-**Error:** `error getting credentials – err: exit status 1`  
-**Solution:**
-```bash
-rm -rf ~/.docker
-docker pull node:18-alpine
-```
-
----
-
-### 4️⃣ Orphan Containers Warning
-**Solution:**
-```bash
-docker compose down --remove-orphans
-```
-
----
-
-### 5️⃣ Database Connection Error (WordPress)
-**Solution:** Ensure MySQL and WordPress are on the same Docker network (`wp-net`).
-
----
-
-## 🏁 Result
-
-Successfully implemented:
-
-- ✅ Nginx container using Docker Run with port mapping and volume
-- ✅ Docker Compose orchestration (network + container lifecycle)
-- ✅ WordPress + MySQL multi-container networking on `wp-net`
-- ✅ Multi-stage Node.js builds (`exp6-nodeapp`, `exp6-advanced-app`)
-- ✅ `curl localhost:3001` → **"Running in production mode 🚀"**
-- ✅ Port conflict and credential error resolution
-- ✅ Orphan container cleanup with `--remove-orphans`
-
----
-
-## 📌 Conclusion
-
-This experiment provided hands-on experience in:
-
-- Managing containers using CLI and Compose
-- Building optimized Docker images with multi-stage builds
-- Implementing multi-container architecture with custom networks
-- Handling production-level Docker errors
-- Understanding networking, volumes, and environment configurations
-
-The practical exposure enhanced understanding of container orchestration and deployment workflows.
-
----
-
-## 📚 References
-
-- [Docker Official Documentation](https://docs.docker.com/)
-- [Docker Compose Docs](https://docs.docker.com/compose/)
-- [Docker Networking](https://docs.docker.com/network/)
-- [Multi-stage Builds](https://docs.docker.com/build/building/multi-stage/)
+![10](Screenshots/Screenshot(1055).png)
