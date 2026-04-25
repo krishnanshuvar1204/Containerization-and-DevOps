@@ -92,7 +92,7 @@ kubectl get nodes
 kubectl apply -f wordpress-deployment.yaml
 ```
 
-![Cluster Start & Deployment](../Screenshots/Exp12/12a.png)
+![Cluster Start & Deployment](Screenshots/Screenshot(1081).png)
 
 **Observation:**
 - `k3d cluster list` shows `mycluster` with load balancer enabled
