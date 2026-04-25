@@ -1,6 +1,4 @@
-# Name: Krishnanshu Varshney
 # SAPID: 500123186
-# Batch: B1(CCVT)
 
 # Containerization and DevOps
 
