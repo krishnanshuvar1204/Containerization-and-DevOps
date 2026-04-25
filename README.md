@@ -40,7 +40,7 @@ This section contains practical experiments and hands-on exercises to apply DevO
 - [Lab 7: Jenkins App](Lab/Lab-7/README.md)
 - [Lab 9: Ansible](Lab/Lab-9/README.md)
 - [Lab 10: SonarQube](Lab/Lab-10/README.md)
-
+- [Lab 11: Docker Swarm](Lab/Lab-11/README.md)
 ---
 
 ## Assignment
