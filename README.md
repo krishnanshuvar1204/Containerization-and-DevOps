@@ -41,6 +41,7 @@ This section contains practical experiments and hands-on exercises to apply DevO
 - [Lab 9: Ansible](Lab/Lab-9/README.md)
 - [Lab 10: SonarQube](Lab/Lab-10/README.md)
 - [Lab 11: Docker Swarm](Lab/Lab-11/README.md)
+- [Lab 12: Kubectl Basics](Lab/Lab-12/README.md)
 ---
 
 ## Assignment
