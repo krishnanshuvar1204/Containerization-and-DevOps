@@ -123,14 +123,6 @@ kubectl get svc wordpress-service
 
 ---
 
-### Task 4 – Database Connection Error (Expected)
-
-Submitted the database form with `localhost` as Database Host.
-
-![Database Connection Error](../Screenshots/Exp12/12d.png)
-
-**Observation:** WordPress throws **"Error establishing a database connection"**.
-
 ---
 
 #### 🔴 Reason for the Error
